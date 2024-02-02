@@ -1,0 +1,14 @@
+click==8.1.7
+CTkMessagebox==2.5
+customtkinter==5.2.2
+matplotlib==3.8.2
+numpy==1.24.4
+open_clip_torch==2.24.0
+opencv_python==4.8.1.78
+Pillow==10.1.0
+pyspng==0.1.1
+Requests==2.31.0
+segment_anything==1.0
+timm==0.9.12
+torch==2.1.2
+torchvision==0.16.2
