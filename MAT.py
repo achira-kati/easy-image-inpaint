@@ -113,7 +113,7 @@ def generate_images(
         z = torch.from_numpy(np.random.randn(1, G.z_dim)).to(device)
         output = G(image, mask, z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
         
-        # output = v2.Resize(size=(ori_height, ori_width), antialias=True)(output)
+        output = v2.Resize(size=(ori_height, ori_width), antialias=True)(output)
         output = torch.nn.functional.interpolate(output, size=(ori_height, ori_width), mode='bicubic', align_corners=False)
         
         output = (output.permute(0, 2, 3, 1) * 127.5 + 127.5).round().clamp(0, 255).to(torch.uint8)

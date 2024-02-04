@@ -22,8 +22,23 @@ class ToplevelWindow(customtkinter.CTkToplevel):
     def __init__(self, file_path, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title("Edit Image")
+
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
         
         self.image = Image.open(file_path)
+
+        # Check if the image height is greater than the screen height
+        if self.image.height > screen_height:
+            # Calculate new dimensions while maintaining the aspect ratio
+            aspect_ratio = self.image.width / self.image.height
+            new_height = screen_height
+            new_width = int(aspect_ratio * new_height)
+
+            # Resize the image
+            self.image = self.image.resize((new_width, new_height))
+
+        # Create the PhotoImage object with the resized image
         self.tk_image = ImageTk.PhotoImage(self.image)
         
         self.geometry(f"{self.image.width}x{self.image.height}")
@@ -33,6 +48,8 @@ class ToplevelWindow(customtkinter.CTkToplevel):
         
         self.canvas = MaskCanvas(self, self.image)
         self.canvas.pack(fill='both', expand=True)
+
+
 
 class MaskCanvas(FixCTkCanvas):
     def __init__(self, master, image):
@@ -156,6 +173,12 @@ class MaskCanvas(FixCTkCanvas):
 
             self.create_mask_mode = 'gan'
             self.update_bindings()
+
+            self.rec_draw_button.destroy()
+            self.free_draw_button.destroy()
+            
+            self.save_button = customtkinter.CTkButton(self.master.button_frame, text="Save Image", command=self.on_save_result)
+            self.save_button.pack(side='left', fill='x', expand=True, padx=10)
             
     def on_mouse_move_for_mask(self, event):
         self.create_image(0, 0, anchor='nw', image=self.bg_image)
@@ -184,7 +207,20 @@ class MaskCanvas(FixCTkCanvas):
 
             self.create_mask_mode = 'gan'
             self.update_bindings()
+
+            self.rec_draw_button.destroy()
+            self.free_draw_button.destroy()
+
+            self.save_button = customtkinter.CTkButton(self.master.button_frame, text="Save Image", command=self.on_save_result)
+            self.save_button.pack(side='left', fill='x', expand=True, padx=10)
             
+            
+    def on_save_result(self):
+        image_path = filedialog.asksaveasfilename(defaultextension='.png', filetypes=[("PNG Files", "*.png"), ("JPEG Files", "*.jpg")])
+        if image_path:
+            bg_image = ImageTk.getimage(self.bg_image)
+            bg_image.save(image_path)
+                
     def on_click(self, event):
         self.points.append((event.x, event.y))
         if len(self.points) == 2:
