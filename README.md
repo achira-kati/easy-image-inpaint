@@ -44,5 +44,5 @@ Note: If your GPU memory is less than 8GB please use `--resolution 512` and on t
 
 
 ## License
-- Creative Commons
-- Apache-2.0 license
+- [Creative Commons](licenses/creative_commons_license.txt)
+- [Apache-2.0 license](licenses/apache_license.txt)
