@@ -2,6 +2,7 @@ from tkinter import filedialog, PhotoImage
 from PIL import Image, ImageTk, ImageDraw
 import customtkinter
 from FixCTkCanvas import FixCTkCanvas
+import webbrowser
 from segmentation.segment import init_segment_model, segment_image
 from MAT import generate_images, init_gan_model
 from CTkMessagebox import CTkMessagebox
@@ -9,7 +10,7 @@ import numpy as np
 import cv2
 import argparse
 
-parser = argparse.ArgumentParser(description='AI Image Editor.')
+parser = argparse.ArgumentParser(description='Easy Image Inpaint.')
 
 parser.add_argument('--resolution', type=int, required=True, help='Resolution as an integer')
 parser.add_argument('--sam_name', type=str, required=True, help='SAM name as a string')
@@ -73,10 +74,10 @@ class MaskCanvas(FixCTkCanvas):
 
         self.brush_size = 4
 
-        self.rec_draw_button = customtkinter.CTkButton(self.master.button_frame, text="Segment Mode", command=self.rec_draw_mode, fg_color='#8d591f', hover=False)
+        self.rec_draw_button = customtkinter.CTkButton(self.master.button_frame, text="Move and Replace", command=self.rec_draw_mode, fg_color='#8d591f', hover=False)
         self.rec_draw_button.pack(side='left', fill='x', expand=True, padx=10)
         
-        self.free_draw_button = customtkinter.CTkButton(self.master.button_frame, text="Free Draw Mode", command=self.free_draw_mode, fg_color='#1f538d', hover=True)
+        self.free_draw_button = customtkinter.CTkButton(self.master.button_frame, text="Remove an object", command=self.free_draw_mode, fg_color='#1f538d', hover=True)
         self.free_draw_button.pack(side='left', fill='x', expand=True, padx=10)
 
 
@@ -197,6 +198,13 @@ class MaskCanvas(FixCTkCanvas):
 
             self.create_mask_mode = 'gan'
             self.update_bindings()
+
+            self.rec_draw_button.destroy()
+            self.free_draw_button.destroy()
+
+            self.save_button = customtkinter.CTkButton(self.master.button_frame, text="Save Image", command=self.on_save_result)
+            self.save_button.pack(side='left', fill='x', expand=True, padx=10)
+            
         elif msg.get() == 'Yes':
             
             gen_image = generate_images(self.image, self.mask, mat_model, resolution=args.resolution)
@@ -216,7 +224,7 @@ class MaskCanvas(FixCTkCanvas):
             
             
     def on_save_result(self):
-        image_path = filedialog.asksaveasfilename(defaultextension='.png', filetypes=[("PNG Files", "*.png"), ("JPEG Files", "*.jpg")])
+        image_path = filedialog.asksaveasfilename(defaultextension='.png', filetypes=[("PNG Files", "*.png")])
         if image_path:
             bg_image = ImageTk.getimage(self.bg_image)
             bg_image.save(image_path)
@@ -259,44 +267,32 @@ class MaskCanvas(FixCTkCanvas):
             self.points = []
             self.create_mask_mode = 'segment'
             self.update_bindings()
+
         else:
             self.points = []
             self.delete("all")
             self.create_image(0, 0, anchor='nw', image=self.bg_image)
 
     
-class TextFrame(customtkinter.CTkScrollableFrame):
+class TextFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.label = customtkinter.CTkLabel(self, text="How to use", font=('Bold', 20))
-        self.label.pack(pady=20)
+        photo = customtkinter.CTkImage(dark_image=Image.open("images/github.png"), size=(30, 30))
+        
+        button = customtkinter.CTkButton(self, text="Have Fun 😊", image=photo, compound='right', command=self.open_link)
+        button.place(relx=0.5, rely=0.5, anchor='center')
 
-        self.textbox = customtkinter.CTkTextbox(self, width=400, height=220,corner_radius=10)
-        self.textbox.pack(padx=15, pady=15, fill='x')
-        self.textbox.insert("1.0", "There are two modes available:\n")
-        self.textbox.insert("2.0", "\n")
-        self.textbox.insert("3.0", "1. Segment mode: If you want to cut some objects and move them to another position, for example, Move a person to the left side. Use segment mode to cut or move an object that you want, and you can drag that object anywhere then generate the part you cut or moved. You only have to click twice to create a rectangle that covers the object that you want, and then click confirm to generate.\n")
-        self.textbox.insert("4.0", "\n")
-        self.textbox.insert("5.0", "2. Free Draw mode: If you want to just remove some objects, use Free Draw mode to erase or regenerate a specific area. You have to select Free Draw mode and hold left-click to draw, then move your mouse. To adjust the brush size, use the scroll mouse to increase or decrease it. After you're done, press 'Enter' on your keyboard to generate an image.")
-        self.textbox.configure(state='disable')
-
-        self.textboxThai = customtkinter.CTkTextbox(self, width=400, height=200,corner_radius=10)
-        self.textboxThai.pack(padx=15, fill='x')
-        self.textboxThai.insert("1.0", "มีทั้งหมดสองโหมด:\n")
-        self.textboxThai.insert("2.0", "\n")
-        self.textboxThai.insert("3.0", "1. Segment mode: ใช้สำหรับย้ายหรือลบวัตถุนั้นๆที่ต้องการแล้ว gereate รูปขึ้นมาใหม่เช่นย้านคนให้ไปอยู่ด้านซ้ายให้เลือกใช้ Segment mode หลังจากเลือกแล้ว กดคลิกซ้ายสองทีเพื่อสร้างกล่องสี่่หลี่ยมและให้วัตถุที่ต้องการอยู่ในนั้นหลังจากนั้นให้ย้ายวัตถุนั้นไปที่จุดที่ต้องการแล้ว generate รูป\n")
-        self.textboxThai.insert("4.0", "\n")
-        self.textboxThai.insert("5.0", "2. Free Draw mode: หากคุณต้องการจะลบวัตถุบางอย่างใช้ Free Draw mode เพื่อลบหรือสร้างพื้นที่ที่เฉพาะเจาะจง คุณต้องเลือก Free Draw mode และคลิกที่คลิกซ้ายเพื่อวาดแล้วเคลื่อนย้ายเมาส์ เพื่อปรับขนาดของแปรง ใช้ scroll mouse เพื่อเพิ่มหรือลดมัน หลังจากที่คุณเสร็จแล้วกด 'Enter' บนแป้นพิมพ์ของคุณเพื่อสร้างภาพ")
-        self.textboxThai.configure(state='disable')
+    def open_link(self):
+        webbrowser.open_new("https://github.com/achira-kati/easy-image-inpaint")
          
 
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-        self.geometry("800x512")
+        self.geometry("300x200")
         customtkinter.set_default_color_theme("dark-blue")
-        self.title("AI Image Editor")
+        self.title("Easy Image Inpaint")
         
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)

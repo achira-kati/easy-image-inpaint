@@ -12,3 +12,4 @@ segment_anything==1.0
 timm==0.9.12
 torch==2.1.2
 torchvision==0.16.2
+ninja==1.11.1.1
