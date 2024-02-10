@@ -1,5 +1,5 @@
 # Easy Image Inpaint
-A simple Python image painting tool. An effective tool for **move** or **remove** any desired object. This application was built for my YouTube video as its goal as an educational resource.
+A simple Python image painting tool. An effective tool for **move** or **remove** any desired object. This application was built for my [YouTube video](https://www.youtube.com/watch?v=3NwugMn3YJE&t=48s) as its goal as an educational resource.
 
 ## Features
 - **Move and Replace an Object** Just use your left click to start creating a box and left click again to finish a box on top of your object, then move your object anywhere you want, then left click, press "Yes" if you want to just remove that object or "No" to keep it.
