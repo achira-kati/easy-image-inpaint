@@ -1,5 +1,5 @@
 # Easy Image Inpaint
-A simple Python image painting tool. An effective tool for **move** or **remove** any desired object. This application was built for my YouTube video as its goal as an educational resource.
+A simple Python image painting tool. An effective tool for **move** or **remove** any desired object. This application was built for my [YouTube video](https://www.youtube.com/watch?v=3NwugMn3YJE&t=48s) as its goal as an educational resource.
 
 ## Features
 - **Move and Replace an Object** Just use your left click to start creating a box and left click again to finish a box on top of your object, then move your object anywhere you want, then left click, press "Yes" if you want to just remove that object or "No" to keep it.
@@ -29,9 +29,9 @@ Note: If your GPU memory is less than 8GB please use `--resolution 512` and on t
    ```
    pip install -r requirements.txt
    ```
-4. Download pretrain for MAT and SAM and put it `pretrain/` folder
-   - For MAT download [here](https://mycuhk-my.sharepoint.com/personal/1155137927_link_cuhk_edu_hk/_layouts/15/onedrive.aspx?ga=1&id=%2Fpersonal%2F1155137927%5Flink%5Fcuhk%5Fedu%5Fhk%2FDocuments%2FRelease%2FMAT%2Fmodels), you can useany ofy their pre-train models. Please correctly set `--resolution` to pre-train you use. For more detail, please visit their [Github](https://github.com/fenglinglwb/mat?tab=readme-ov-file).
-   - For SAM download from their [Github](https://github.com/facebookresearch/segment-anything?tab=readme-ov-file#model-checkpoints) and make sure that you use `--sam_name` correctly to pre-train you use.
+4. Download pretrain for MAT and SAM and put it it in the `pretrain/` folder
+   - For MAT download [here](https://mycuhk-my.sharepoint.com/personal/1155137927_link_cuhk_edu_hk/_layouts/15/onedrive.aspx?ga=1&id=%2Fpersonal%2F1155137927%5Flink%5Fcuhk%5Fedu%5Fhk%2FDocuments%2FRelease%2FMAT%2Fmodels), you can use any of their pre-train models. Please correctly set `--resolution` to pre-train you use. For more detail, please visit their [Github](https://github.com/fenglinglwb/mat?tab=readme-ov-file).
+   - For SAM download from their [Github](https://github.com/facebookresearch/segment-anything?tab=readme-ov-file#model-checkpoints) and make sure that you use `--sam_name` correctly to pre-train that you use.
 
 5. Run `app.py` e.g.
    ```
@@ -44,5 +44,5 @@ Note: If your GPU memory is less than 8GB please use `--resolution 512` and on t
 
 
 ## License
-- Creative Commons
-- Apache-2.0 license
+- [Creative Commons](licenses/creative_commons_license.txt)
+- [Apache-2.0 license](licenses/apache_license.txt)
