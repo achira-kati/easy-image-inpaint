@@ -17,6 +17,8 @@ import torchvision.transforms.v2 as v2
 import legacy 
 from networks.mat import Generator
 
+# device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = 'cpu'
 
 def num_range(s: str) -> List[int]:
     '''Accept either a comma separated list of numbers 'a,b,c' or a range 'a-c' and return as a list of ints.'''
@@ -51,7 +53,6 @@ def named_params_and_buffers(module):
 def init_gan_model(resolution=512, network_pkl='pretrain/CelebA-HQ_512.pkl'):
     print('Initializing MAT model.....')
     print(f'Loading networks from: {network_pkl}')
-    device = torch.device('cuda')
     with dnnlib.util.open_url(network_pkl) as f:
         G_saved = legacy.load_network_pkl(f)['G_ema'].to(device).eval().requires_grad_(False) # type: ignore
     net_res = 512 if resolution > 512 else resolution
@@ -72,7 +73,6 @@ def generate_images(
     """
     Generate images using pretrained network pickle.
     """
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
     ori_width = image.width
     ori_height = image.height
