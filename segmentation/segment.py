@@ -7,8 +7,7 @@ import matplotlib.pyplot as plt
 import cv2
 
 os.chdir('.')
-# device = 'cuda' if torch.cuda.is_available() else 'cpu'
-device = 'cpu'
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def init_segment_model(name, path):
     print('Initializing SAM model.....')
